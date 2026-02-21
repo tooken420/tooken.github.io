@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fullscreen Video</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+
+  <!-- Video background -->
+<video id="video-bg" class="video-bg" autoplay loop playsinline>
+  <source src="fds.mp4" type="video/mp4">
+</video>
+
+<div class="content">
+  <div class="box rainbow text token">
+    <u>TOOKEN</u>
+    
+    <!-- popup panel -->
+    <div class="popup-ui">
+      <p><img src="discord-brands-solid-full.svg" width="30" height="30"> tooken420</p>
+      <p><img src="grg_-removebg-preview.png" width="30" height="30">tooken_x</p>
+    </div>
+  </div>
+    <div class="box typing-container" id="typing-box">
+    <div class="typing-box">
+      <span id="typing-text"></span>
+      <span class="cursor">|</span>
+    </div>
+  </div>
+</div>
+
+  <!-- scripts -->
+
+  <script>
+
+document.addEventListener("DOMContentLoaded", () => {
+  const video = document.getElementById('video-bg');
+  video.volume = 0.04;
+
+  // Hover show
+  volumeBar.addEventListener('mouseenter', () => {
+    hoverBox.style.opacity = '1';
+  });
+
+  // Hover hide
+  volumeBar.addEventListener('mouseleave', () => {
+    hoverBox.style.opacity = '0';
+  });
+});
+
+const box = document.querySelector('.box');
+
+const MAX_DISTANCE = 200;
+
+let currentX = 0;
+let currentY = 0;
+let targetX = 0;
+let targetY = 0;
+
+document.addEventListener('mousemove', (e) => {
+  const rect = box.getBoundingClientRect();
+
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+
+  const deltaX = e.clientX - centerX;
+  const deltaY = e.clientY - centerY;
+
+  const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+  if (distance < MAX_DISTANCE) {
+    targetX = -(deltaY / 9.5);
+    targetY = (deltaX / 9.5);
+  } else {
+    targetX = 0;
+    targetY = 0;
+  }
+});
+
+function animate() {
+  // smooth easing
+  currentX += (targetX - currentX) * 0.03;
+  currentY += (targetY - currentY) * 0.03;
+
+  box.style.transform = `rotateX(${currentX}deg) rotateY(${currentY}deg)`;
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+const phrases = [
+  "PYTHON",
+  "CSS",
+  "JAVA",
+  "HTML",
+  "LUA",
+  "C#",
+
+];
+
+const typingElement = document.getElementById('typing-text');
+let currentPhrase = 0;
+let currentChar = 0;
+let typingSpeed = 80;
+let deletingSpeed = 50;
+let isDeleting = false;
+
+function type() {
+  const phrase = phrases[currentPhrase];
+
+  if (isDeleting) {
+    currentChar--;
+    typingElement.textContent = phrase.slice(0, currentChar);
+  } else {
+    currentChar++;
+    typingElement.textContent = phrase.slice(0, currentChar);
+  }
+
+  if (!isDeleting && currentChar === phrase.length) {
+    // pause at end of typing
+    setTimeout(() => { isDeleting = true; type(); }, 2000);
+    return;
+  } else if (isDeleting && currentChar === 0) {
+    // move to next phrase
+    isDeleting = false;
+    currentPhrase = (currentPhrase + 1) % phrases.length;
+  }
+
+  setTimeout(type, isDeleting ? deletingSpeed : typingSpeed);
+}
+
+// start typing loop
+type();
+</script>
+
+<!-- background video -->
+  <style>
+    video {
+      opacity: 0;
+      animation: fadeIn 4s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 0.4; }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .video-bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 2rem;
+  font-weight: bold;
+
+  /* Initial color */
+  color: white;
+
+  /* Animate text color through rainbow */
+  animation: rainbow-text 3s linear infinite;
+}
+
+ /* POP UP UI*/
+.box.token {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 1px;       /* optional rounded edges */
+
+  max-width: fit-content;    
+}
+
+.popup-ui {
+  position: absolute;
+  bottom: 130%;
+  left: 50%;
+  transform: translateX(-50%) scale(0.8);
+  background: rgba(20,20,20,0.95);
+  color: rgb(255, 255, 255);
+  padding: 16px 16px;
+  border-radius: 4px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 10;
+}
+
+.box.token:hover .popup-ui {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) scale(0.7);
+}
+
+.popup-ui p {
+  margin: 1px 0;
+  padding: 2px 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  display: flex;         
+  align-items: center;   
+}
+
+.popup-ui p img {
+  width: 30px;
+  height: 30px;
+  margin-right: 20px;    /* space between emoji and text */
+  flex-shrink: 0;       /* keep emoji from shrinking */
+  display: block;        /* ensures flex alignment works */
+}
+
+.popup-ui p:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+/* POP UP UI ^^*/
+
+@keyframes rainbow-text {
+  0%   { color: rgb(255, 0, 0); }    
+  12.5%  { color: rgb(255, 127, 0); } 
+  25%  { color: rgb(255, 255, 0); }   
+  37.5%  { color: rgb(0, 255, 0); }     
+  50%  { color: rgb(0, 0, 0); }   
+  62.5%  { color: rgb(0, 0, 255); }    
+  81% { color: rgb(139, 0, 255); }  
+  100%   { color: rgb(255, 0, 0); }
+}
+  </style>
+</body>
+</html>
